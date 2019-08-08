@@ -1,0 +1,29 @@
+version: '2'
+services:
+    web:
+        image: nginx:latest
+        container_name: laravel_passport_web
+        ports:
+            - "8000:80"
+            - "3000:443"
+        volumes:
+            - "./etc/nginx/default.conf:/etc/nginx/conf.d/default.conf"
+            - "./etc/ssl:/etc/ssl"
+            - "./web:/web"
+        depends_on:
+            - "php"
+            - "mongodb"
+    php:
+        image: nanoninja/php-fpm
+        container_name: laravel_passport_php
+        volumes:
+            - "./etc/php/php.ini:/usr/local/etc/php/conf.d/php.ini"
+            - ./web:/web
+    mongodb:
+        image: mongo
+        container_name: laravel_passport_mongo
+        volumes:
+            - ./data/db/mongo:/data/db
+        ports:
+            - "27020:27017"
+        command: --storageEngine wiredTiger
